@@ -28,7 +28,7 @@ Dockerを利用したRailsの開発環境を用意するための個人用テン
 ### アプリケーション新規作成
 
 ```shell
-$APPNAME="your_new_application_name"
+APPNAME="your_new_application_name"
 git clone https://github.com/ha4gu/docker-rails-template.git ${APPNAME}
 cd ${APPNAME}
 rm -rf .git # テンプレートとしてのコミット履歴を削除
