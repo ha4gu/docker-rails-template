@@ -23,7 +23,7 @@ Dockerを利用したRailsの開発環境を用意するための個人用テン
   - busybox:latest
   - volumesの中身の確認用、手動起動の必要あり。
 
-## 利用方法
+## 開発を始めるまで
 
 ### アプリケーション新規作成
 
@@ -192,7 +192,7 @@ end
 ```
 
 ```shell
-dc run --rm app bundle exec rails db:create # 先に自動的にbundle installも実行される
+docker-compose run --rm app bundle exec rails db:create # 先に自動的にbundle installも実行される
 bundle install # ローカルにもGemをインストール (for RubyMine)
 rbenv rehash
 ```
@@ -217,6 +217,14 @@ vim app/assets/stylesheets/application.scss
 ```scss:app/assets/stylesheets/application.scss
 // Custom bootstrap variables must be set or imported *before* bootstrap.
 @import "bootstrap";
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, YuGothic, "Yu Gothic",
+  "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Hiragino Kaku Gothic Pro",
+  "Noto Sans CJK JP", "IPA Pゴシック", "IPAPGothic", Meiryo, sans-serif,
+  "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
 //@import "./other-local-scss-file";
 ```
 
@@ -314,7 +322,9 @@ Rails直接: `http://localhost:3000/`
 docker-compose down # 停止&コンテナ削除 ※Volumeは残るのでデータは消えない
 ```
 
-### Git and GitHub
+## バージョン管理
+
+### Git
 
 ```shell
 git init
@@ -322,9 +332,61 @@ git add -A
 git commit -m "Initial commit"
 ```
 
-GitHub上で先にレポジトリを作っておく
+### GitHub
+
+先にGitHub上でレポジトリを作成しておく
 
 ```shell
 git remote set-url origin git@github.com:ha4gu/hogehoge.git
 git push -u origin master
+```
+
+## テスト
+
+### RSpec
+
+```shell
+bin/rails g rspec:install
+vim spec/spec_helper.rb
+```
+
+```diff
+ # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
++
++require "capybara/rspec"
++Capybara.server_port = "3030"
++Capybara.server_host = Socket.ip_address_list.detect { |addr| addr.ipv4_private? }.ip_address
++
++Capybara.register_driver :selenium_remote do |app|
++  url = "http://chrome:4444/wd/hub"
++  opts = { desired_capabilities: :chrome, browser: :remote, url: url }
++  driver = Capybara::Selenium::Driver.new(app, opts)
++end
++
+ RSpec.configure do |config|
++  config.before(:each, type: :system) do
++    driven_by :selenium_remote
++    host! "http://#{Capybara.server_host}:#{Capybara.server_port}"
++  end
++
+   # rspec-expectations config goes here. You can use an alternate
+   # assertion/expectation library such as wrong or the stdlib/minitest
+```
+
+```shell
+docker-compose run app bundle exec rspec
+```
+
+## デプロイ
+
+### Heroku
+
+※Dockerは使用せずにRailsを生で動かすパターン
+
+```bash
+heroku create ha4gu-hogehoge
+git push heroku master
+heroku pg:reset DATABASE # DBの初期化
+heroku run rails db:migrate
+heroku run rails db:seed
 ```
