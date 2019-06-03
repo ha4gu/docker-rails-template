@@ -96,7 +96,7 @@ vim config/application.rb
 vim Gemfile # edit as you like
 ```
 
-```Gemfile
+```ruby
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
@@ -132,8 +132,8 @@ gem 'bcrypt', '~> 3.1', '>= 3.1.12'
 gem 'bootsnap', '>= 1.1.0', require: false
 
 # Use slim instead of erb
-gem 'slim-rails', '~> 3.2'
 gem 'html2slim', '~> 0.2.0'
+gem 'slim-rails', '~> 3.2'
 
 # Use jQuery 3 and Bootstrap 4
 # gem 'jquery-rails', '~> 4.3', '>= 4.3.3'
@@ -175,8 +175,8 @@ end
 
 group :development do
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
-  gem 'web-console', '>= 3.3.0'
   gem 'listen', '>= 3.0.5', '< 3.2'
+  gem 'web-console', '>= 3.3.0'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
@@ -185,9 +185,9 @@ end
 group :test do
   # Use RSpec and Capybara with Headless Chrome
   gem 'capybara', '~> 3.22'
+  gem 'rspec-rails', '~> 3.8', '>= 3.8.2'
   gem 'selenium-webdriver', '~> 3.142', '>= 3.142.3'
   gem 'webdrivers', '~> 4.0'
-  gem 'rspec-rails', '~> 3.8', '>= 3.8.2'
 end
 ```
 
@@ -196,6 +196,26 @@ docker-compose run --rm app bundle exec rails db:create # 先に自動的にbund
 bundle install # ローカルにもGemをインストール (for RubyMine)
 rbenv rehash
 ```
+
+#### bundlerのバージョンに関するエラーが出た場合の対処
+
+bundler含め、gemのアップデートを行う。
+起動時に`--entrypoint ""`を追加することで`Dockerfile`内に記載されているコンテナ起動時自動実行コマンドを空で上書きし、`bundle install`の実行（およびエラーが出ることによる異常終了）を抑止する。
+
+```bash
+docker-compose run --rm --entrypoint "" app /bin/bash
+```
+
+```bash
+# コンテナ内での実行
+gem outdated
+gem update --system
+gem update bundler
+gem update
+exit
+```
+
+これで再度bundle installを実行させる
 
 ### erbからslim、cssからscssへの変換
 
