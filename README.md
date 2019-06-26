@@ -11,7 +11,7 @@ Dockerを利用したRailsの開発環境を用意するための個人用テン
   - ruby:2.6.3, with Node.js 10.x and Ruby on Rails 5.2.3
   - Railsアプリケーションを動かすWebアプリケーションサーバ。
 - db
-  - postgres:10.8
+  - postgres:10.9
   - DBサーバ。
 - chrome
   - selenium/standalone-chrome:3.141.59
