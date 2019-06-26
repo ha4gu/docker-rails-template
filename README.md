@@ -206,6 +206,7 @@ bundle install # ローカルにもGemをインストール (for RubyMine)
 rbenv rehash
 ```
 
+<!--
 #### bundlerのバージョンに関するエラーが出た場合の対処
 
 bundler含め、gemのアップデートを行う。
@@ -225,6 +226,7 @@ exit
 ```
 
 これで再度bundle installを実行させる
+-->
 
 ### erbからslim、cssからscssへの変換
 
@@ -233,8 +235,8 @@ erb2slim app/views/layouts/ --delete
 ```
 
 ```shell
-mv app/assets/stylesheets/application.{css,scss}
-echo > app/assets/stylesheets/application.scss
+rm -f app/assets/stylesheets/application.css
+touch app/assets/stylesheets/application.scss
 ```
 
 ### Rubocopの実行
@@ -243,9 +245,17 @@ echo > app/assets/stylesheets/application.scss
 rubocop
 ```
 
-指摘内容に応じてファイルを編集する
+指摘内容に応じてファイルを編集する。すべて自動で修正してしまうなら以下の通り。
+
+```shell
+rubocop --auto-correct
+rubocop # 再確認
+```
+
 
 ### Bootstrap 4の有効化
+
+Gemfile内で`# Use Bootstrap 4 with jQuery 3`の部分の行を有効にしておくこと。
 
 ```shell
 vim app/assets/stylesheets/application.scss
@@ -284,12 +294,13 @@ vim app/assets/javascripts/application.js
  //
  //= require rails-ujs
  //= require activestorage
- //= require_tree .
 +
 +// For Bootstrap 4
 +//= require jquery3
 +//= require popper
 +//= require bootstrap-sprockets
++
+ //= require_tree .
 ```
 
 ### ロケールの日本語化
@@ -307,6 +318,7 @@ macOS側から直接ポート3000番へアクセスでき、かつリバース�
 pumaの設定を変更する。
 
 ```shell
+mkdir tmp/sockets
 vim config/puma.rb
 ```
 
@@ -343,7 +355,7 @@ app_1          | * Listening on unix:///opt/railsapp/tmp/sockets/puma.sock
 app_1          | Use Ctrl-C to stop
 ```
 
-### テスト起動
+### 起動
 
 ```shell
 docker-compose up -d # 起動
@@ -352,30 +364,11 @@ docker-compose logs -f # リアルタイムログ出力
 
 ブラウザからアクセスできることを確認
 
-nginx経由: `http://localhost/`
-Rails直接: `http://localhost:3000/`
+nginx経由: [http://localhost/](http://localhost/)
+Rails直接: [http://localhost:3000/](http://localhost:3000/)
 
 ```shell
 docker-compose down # 停止&コンテナ削除 ※Volumeは残るのでデータは消えない
-```
-
-## バージョン管理
-
-### Git
-
-```shell
-git init
-git add -A
-git commit -m "Initial commit"
-```
-
-### GitHub
-
-先にGitHub上でレポジトリを作成しておく
-
-```shell
-git remote set-url origin git@github.com:ha4gu/hogehoge.git
-git push -u origin master
 ```
 
 ## テスト
@@ -413,6 +406,25 @@ vim spec/spec_helper.rb
 
 ```shell
 docker-compose run app bundle exec rspec
+```
+
+## バージョン管理
+
+### Git
+
+```shell
+git init
+git add -A
+git commit -m "Initial commit"
+```
+
+### GitHub
+
+先にGitHub上でレポジトリを作成しておく
+
+```shell
+git remote set-url origin git@github.com:ha4gu/hogehoge.git
+git push -u origin master
 ```
 
 ## デプロイ
