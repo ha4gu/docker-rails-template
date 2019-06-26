@@ -26,6 +26,11 @@ RUN wget -q https://github.com/progrium/entrykit/releases/download/v${ENTRYKIT_V
 # Configure Bundler
 RUN bundle config build.nokogiri --use-system-libraries
 
+# Update default gems
+RUN gem update --system \
+  && gem update bundler \
+  && gem update
+
 # Rails Application
 RUN mkdir /opt/railsapp
 WORKDIR /opt/railsapp
