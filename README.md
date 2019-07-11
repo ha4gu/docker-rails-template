@@ -206,14 +206,13 @@ bundle install # ローカルにもGemをインストール (for RubyMine)
 rbenv rehash
 ```
 
-<!--
 #### bundlerのバージョンに関するエラーが出た場合の対処
 
 bundler含め、gemのアップデートを行う。
-起動時に`--entrypoint ""`を追加することで`Dockerfile`内に記載されているコンテナ起動時自動実行コマンドを空で上書きし、`bundle install`の実行（およびエラーが出ることによる異常終了）を抑止する。
+それからbundle installを実行させる。
 
 ```bash
-docker-compose run --rm --entrypoint "" app /bin/bash
+docker-compose run app shell
 ```
 
 ```bash
@@ -226,7 +225,11 @@ exit
 ```
 
 これで再度bundle installを実行させる
--->
+
+```bash
+docker-compose run app install
+```
+
 
 ### erbからslim、cssからscssへの変換
 
@@ -371,6 +374,12 @@ Rails直接: [http://localhost:3000/](http://localhost:3000/)
 docker-compose down # 停止&コンテナ削除 ※Volumeは残るのでデータは消えない
 ```
 
+#### Rails Consoleの起動
+
+```shell
+docker-compose run app console
+```
+
 ## テスト
 
 ### RSpec
@@ -404,8 +413,10 @@ vim spec/spec_helper.rb
    # assertion/expectation library such as wrong or the stdlib/minitest
 ```
 
+以下のコマンドでRSpecを実行可能。
+
 ```shell
-docker-compose run app bundle exec rspec
+docker-compose run app rspec
 ```
 
 ## バージョン管理

@@ -36,6 +36,12 @@ RUN mkdir /opt/railsapp
 WORKDIR /opt/railsapp
 
 ENTRYPOINT [ \
+  "switch", "install=bundle install --without production -j4", "--", \
+  "switch", "update=bundle update --without production -j4", "--", \
+  "switch", "console=bundle exec rails c", "--", \
+  "switch", "rspec=bundle exec rspec", "--", \
+  "switch", "shell=bash", "--", \
+  \
   "prehook", "ruby -v", "--", \
   "prehook", "bundle install --without production -j4 --quiet", "--", \
   "prehook", "rails -v", "--", \
