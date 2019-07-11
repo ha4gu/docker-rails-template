@@ -27,7 +27,7 @@ Dockerを利用したRailsの開発環境を用意するための個人用テン
 
 ### アプリケーション新規作成
 
-```shell
+```bash
 APPNAME="your_new_application_name"
 git clone https://github.com/ha4gu/docker-rails-template.git ${APPNAME}
 cd ${APPNAME}
@@ -48,7 +48,7 @@ rails new . --force --skip-git --skip-bundle --skip-coffee --skip-turbolinks --s
 
 ### データベース設定の変更
 
-```shell
+```bash
 vim config/database.yml
 ```
 
@@ -69,7 +69,7 @@ vim config/database.yml
 
 ### タイムゾーンの変更
 
-```shell
+```bash
 vim config/application.rb
 ```
 
@@ -92,7 +92,7 @@ vim config/application.rb
 
 ### Gemfileの用意とDBの作成
 
-```shell
+```bash
 vim Gemfile # edit as you like
 ```
 
@@ -200,7 +200,7 @@ group :test do
 end
 ```
 
-```shell
+```bash
 docker-compose run --rm app bundle exec rails db:create # 先に自動的にbundle installも実行される
 bundle install # ローカルにもGemをインストール (for RubyMine)
 rbenv rehash
@@ -233,24 +233,24 @@ docker-compose run app install
 
 ### erbからslim、cssからscssへの変換
 
-```shell
+```bash
 erb2slim app/views/layouts/ --delete
 ```
 
-```shell
+```bash
 rm -f app/assets/stylesheets/application.css
 touch app/assets/stylesheets/application.scss
 ```
 
 ### Rubocopの実行
 
-```shell
+```bash
 rubocop
 ```
 
 指摘内容に応じてファイルを編集する。すべて自動で修正してしまうなら以下の通り。
 
-```shell
+```bash
 rubocop --auto-correct
 rubocop # 再確認
 ```
@@ -260,7 +260,7 @@ rubocop # 再確認
 
 Gemfile内で`# Use Bootstrap 4 with jQuery 3`の部分の行を有効にしておくこと。
 
-```shell
+```bash
 vim app/assets/stylesheets/application.scss
 ```
 
@@ -278,7 +278,7 @@ body {
 //@import "./other-local-scss-file";
 ```
 
-```shell
+```bash
 vim app/assets/javascripts/application.js
 ```
 
@@ -308,7 +308,7 @@ vim app/assets/javascripts/application.js
 
 ### ロケールの日本語化
 
-```shell
+```bash
 curl https://raw.githubusercontent.com/svenfuchs/rails-i18n/master/rails/locale/ja.yml -o config/locales/ja.yml
 echo "Rails.application.config.i18n.default_locale = :ja" >> config/initializers/locale.rb
 ```
@@ -320,7 +320,7 @@ Railsはデフォルトだと`http://localhost:3000`でListenするように起�
 macOS側から直接ポート3000番へアクセスでき、かつリバースプロキシのためのソケットも有効になるよう、
 pumaの設定を変更する。
 
-```shell
+```bash
 mkdir tmp/sockets
 vim config/puma.rb
 ```
@@ -360,7 +360,7 @@ app_1          | Use Ctrl-C to stop
 
 ### 起動
 
-```shell
+```bash
 docker-compose up -d # 起動
 docker-compose logs -f # リアルタイムログ出力
 ```
@@ -370,13 +370,13 @@ docker-compose logs -f # リアルタイムログ出力
 nginx経由: [http://localhost/](http://localhost/)
 Rails直接: [http://localhost:3000/](http://localhost:3000/)
 
-```shell
+```bash
 docker-compose down # 停止&コンテナ削除 ※Volumeは残るのでデータは消えない
 ```
 
 #### Rails Consoleの起動
 
-```shell
+```bash
 docker-compose run app console
 ```
 
@@ -384,7 +384,7 @@ docker-compose run app console
 
 ### RSpec
 
-```shell
+```bash
 bin/rails g rspec:install
 cp -pi spec/spec_helper{,.circleci}.rb
 vim spec/spec_helper.rb
@@ -415,7 +415,7 @@ vim spec/spec_helper.rb
 
 以下のコマンドでRSpecを実行可能。
 
-```shell
+```bash
 docker-compose run app rspec
 ```
 
@@ -423,7 +423,7 @@ docker-compose run app rspec
 
 ### Git
 
-```shell
+```bash
 git init
 git add -A
 git commit -m "Initial commit"
@@ -433,7 +433,7 @@ git commit -m "Initial commit"
 
 先にGitHub上でレポジトリを作成しておく
 
-```shell
+```bash
 git remote set-url origin git@github.com:ha4gu/hogehoge.git
 git push -u origin master
 ```
