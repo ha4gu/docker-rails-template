@@ -90,6 +90,21 @@ vim config/application.rb
  end
 ```
 
+### UglifierのES6対応有効化
+
+```bash
+vim config/environments/production.rb
+```
+
+```diff
+(略)
+   # Compress JavaScripts and CSS.
+-  config.assets.js_compressor = :uglifier
++  config.assets.js_compressor = Uglifier.new(harmony: true)
+   # config.assets.css_compressor = :sass
+(略)
+```
+
 ### Gemfileの用意とDBの作成
 
 ```bash
@@ -254,7 +269,6 @@ rubocop
 rubocop --auto-correct
 rubocop # 再確認
 ```
-
 
 ### Bootstrap 4の有効化
 
