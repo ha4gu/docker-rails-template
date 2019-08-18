@@ -11,7 +11,7 @@ jobs:
           RAILS_ENV: test
           DATABASE_USER: postgres
           DATABASE_PASSWORD: P@ssw0rd
-      - image: circleci/postgres:10.8
+      - image: circleci/postgres:9.6
         environment:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: P@ssw0rd
