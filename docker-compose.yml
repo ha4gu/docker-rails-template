@@ -17,11 +17,6 @@ services:
     ports:
       - 5432:5432
 
-  chrome:
-    build:
-      context: ./containers/chrome/
-      dockerfile: Dockerfile
-
   mailcatcher:
     image: zolweb/docker-mailcatcher:latest
     ports:
@@ -51,13 +46,6 @@ services:
       - 80:3000
     depends_on:
       - db
-      - chrome
       - mailcatcher
     tty: true
     stdin_open: true
-
-  data:
-    image: busybox
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-      - bundle:/usr/local/bundle

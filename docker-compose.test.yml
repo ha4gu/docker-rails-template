@@ -1,0 +1,13 @@
+version: "3.7"
+
+services:
+  chrome:
+    build:
+      context: ./containers/chrome/
+      dockerfile: Dockerfile
+
+  app:
+    depends_on:
+      - db
+      - chrome
+      - mailcatcher

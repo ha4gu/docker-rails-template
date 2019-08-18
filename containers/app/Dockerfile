@@ -3,7 +3,7 @@ FROM ruby:2.6.3
 # Use UTF-8
 ENV LANG C.UTF-8
 
-# Install applications
+# Install node.js and other applications
 ENV DEBCONF_NOWARNINGS yes
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
   && apt-get update -qq \
@@ -31,8 +31,7 @@ RUN gem update --system \
   && gem update bundler \
   && gem update
 
-# Rails Application
-RUN mkdir /opt/railsapp
+# Specify work directory
 WORKDIR /opt/railsapp
 
 ENTRYPOINT [ \

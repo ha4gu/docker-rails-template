@@ -1,0 +1,10 @@
+version: "3.7"
+
+services:
+  data:
+    build:
+      context: ./containers/data/
+      dockerfile: Dockerfile
+    volumes:
+      - pgdata:/volumes/pgdata
+      - bundle:/volumes/bundle

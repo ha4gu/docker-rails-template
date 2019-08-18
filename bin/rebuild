@@ -1,0 +1,13 @@
+#!/bin/bash
+set -eu -o pipefail
+export LC_ALL=C
+
+echo "Stop containers:"
+docker-compose  -f docker-compose.yml \
+                -f docker-compose.override.yml \
+                -f docker-compose.test.yml down
+echo ""
+echo "Build containers:"
+docker-compose  -f docker-compose.yml \
+                -f docker-compose.override.yml \
+                -f docker-compose.test.yml build --pull
