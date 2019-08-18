@@ -4,9 +4,6 @@ Dockerを利用したRailsの開発環境を用意するための個人用テン
 
 ## 構成
 
-- web
-  - nginx:1.16
-  - 静的コンテンツの配信とリバースプロキシのためのWebサーバ。
 - app
   - ruby:2.6.3, with Node.js 10.x and Ruby on Rails 5.2.3
   - Railsアプリケーションを動かすWebアプリケーションサーバ。

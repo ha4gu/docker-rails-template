@@ -43,29 +43,13 @@ services:
         source: bundle
         target: /usr/local/bundle
     ports:
-      - 3000:3000
+      - 80:3000
     depends_on:
       - db
       - chrome
       - mailcatcher
     tty: true
     stdin_open: true
-  web:
-    build:
-      context: ./containers/web/
-      dockerfile: Dockerfile
-    volumes:
-      - type: bind
-        source: ./public
-        target: /usr/share/nginx/html
-        read_only: true
-      - type: bind
-        source: ./tmp/sockets
-        target: /usr/share/nginx/sockets
-    ports:
-      - 80:80
-    depends_on:
-      - app
   data:
     image: busybox
     volumes:
