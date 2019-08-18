@@ -128,10 +128,15 @@ yarn-debug.log*
 !/storage/.keep
 
 
-### RubyMine
+### Added by ha4gu
+
+# RubyMine
 /.idea
 
+# Rubocop
+.rubocop*yml
+!.rubocop.yml
 
-### Other files
+# Only for this repository
 HOWTOUSE.md
 Gemfile.lock

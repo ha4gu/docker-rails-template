@@ -181,16 +181,16 @@ gem "slim-rails", "~> 3.2"
 
 group :development, :test do
   # Call "byebug" anywhere in the code to stop execution and get a debugger console
-  gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
+  gem "byebug"
   # Use dotenv for some secure information
   gem "dotenv-rails", "~> 2.7", ">= 2.7.2"
   # Use factory_bot for generate some test data
   gem "factory_bot_rails", "~> 5.0", ">= 5.0.2"
   # Use RuboCop for code style checking
-  gem "rubocop", "~> 0.71.0", require: false
-  gem "rubocop-performance", "~> 1.3", require: false
-  gem "rubocop-rails", "~> 2.0", require: false
-  gem "rubocop-rspec", "~> 1.33", require: false
+  gem "rubocop", "~> 0.74.0", require: false
+  gem "rubocop-performance", "~> 1.4", ">= 1.4.1"
+  gem "rubocop-rails", "~> 2.3"
+  gem "rubocop-rspec", "~> 1.35"
 end
 
 group :development do
@@ -341,7 +341,7 @@ vim config/puma.rb
  # Specifies the `port` that Puma will listen on to receive requests; default is 3000.
  #
 -port        ENV.fetch("PORT") { 3000 }
-+#port        ENV.fetch("PORT") { 3000 }
++# port        ENV.fetch("PORT") { 3000 }
 
 +# Listen on 3000/tcp allowing access from any IP addresses
 +bind "tcp://0.0.0.0:3000"
