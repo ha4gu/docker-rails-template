@@ -1,7 +1,9 @@
 version: "3.7"
+
 volumes:
   pgdata:
   bundle:
+
 services:
   db:
     image: postgres:9.6
@@ -14,14 +16,17 @@ services:
         target: /var/lib/postgresql/data
     ports:
       - 5432:5432
+
   chrome:
     build:
       context: ./containers/chrome/
       dockerfile: Dockerfile
+
   mailcatcher:
     image: zolweb/docker-mailcatcher:latest
     ports:
       - 1080:1080
+
   app:
     build:
       context: ./containers/app/
@@ -50,6 +55,7 @@ services:
       - mailcatcher
     tty: true
     stdin_open: true
+
   data:
     image: busybox
     volumes:
