@@ -25,15 +25,14 @@ Dockerを利用したRailsの開発環境を用意するための個人用テン
 ### アプリケーション新規作成
 
 ```bash
-APPNAME="your_new_application_name"
-git clone https://github.com/ha4gu/docker-rails-template.git ${APPNAME}
-cd ${APPNAME}
+APPNAME="yourNewApplicationName"
+git clone https://github.com/ha4gu/docker-rails-template.git ${APPNAME} && cd ${APPNAME}
 rm -rf .git # テンプレートとしてのコミット履歴を削除
 mv README.md HOWTOUSE.md # Readmeファイルのリネーム（rails new実行時に上書きされてしまうため）
 rbenv version # ローカル側に指定したバージョンのRubyがインストール済みか確認
-rails -v # ローカル側にRailsがインストール済みか確認、なければgem install rails --version="5.2.3"
+gem list ^rails # ローカル側にRailsがインストール済みか確認、なければgem install rails --version="5.2.3"
 docker-compose build
-rails new . --force --skip-git --skip-bundle --skip-coffee --skip-turbolinks --skip-test -d postgresql
+rails _5.2.3_ new . --force --skip-git --skip-bundle --skip-coffee --skip-turbolinks --skip-test -d postgresql
 # --force: Gemfileを上書きさせるために必要
 # --skip-git: .gitignoreを上書きさせない
 # --skip-bundle: このタイミングではまだbundle installを実行させない
@@ -59,8 +58,8 @@ vim config/database.yml
    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 +  host: <%= ENV.fetch("DATABASE_HOST") { "localhost" } %>
 +  port: <%= ENV.fetch("DATABASE_PORT") { 5432 } %>
-+  username: <%= ENV.fetch("DATABASE_USER") { "root" } %>
-+  password: <%= ENV.fetch("DATABASE_PASSWORD") { "password" } %>
++  username: <%= ENV.fetch("DATABASE_USER") { "postgres" } %>
++  password: <%= ENV.fetch("DATABASE_PASSWORD") { "P@ssw0rd" } %>
 (略)
 ```
 
@@ -213,9 +212,7 @@ end
 ```
 
 ```bash
-docker-compose run --rm app bundle exec rails db:create # 先に自動的にbundle installも実行される
-bundle install # ローカルにもGemをインストール (for RubyMine)
-rbenv rehash
+docker-compose run --rm app bundle exec rails db:create # 先にまずbundle installが自動的に実行される
 ```
 
 #### bundlerのバージョンに関するエラーが出た場合の対処
@@ -242,7 +239,6 @@ exit
 docker-compose run app install
 ```
 
-
 ### erbからslim、cssからscssへの変換
 
 ```bash
@@ -267,7 +263,13 @@ rubocop --auto-correct
 rubocop # 再確認
 ```
 
-### Bootstrap 4の有効化
+### CSSライブラリの導入
+
+#### Bulma
+
+※未執筆
+
+#### Bootstrap 4
 
 Gemfile内で`# Use Bootstrap 4 with jQuery 3`の部分の行を有効にしておくこと。
 
@@ -324,15 +326,13 @@ curl https://raw.githubusercontent.com/svenfuchs/rails-i18n/master/rails/locale/
 echo "Rails.application.config.i18n.default_locale = :ja" >> config/initializers/locale.rb
 ```
 
-### ソケットの設定
+### Listenポート設定
 
 Railsはデフォルトだと`http://localhost:3000`でListenするように起動する。
 しかしこのデフォルトのままだとlocalhost以外からのIPアドレスからアクセスできない。
-macOS側から直接ポート3000番へアクセスでき、かつリバースプロキシのためのソケットも有効になるよう、
-pumaの設定を変更する。
+macOS側からアクセスできるようにするため、pumaの設定を変更する。
 
 ```bash
-mkdir tmp/sockets
 vim config/puma.rb
 ```
 
@@ -343,30 +343,11 @@ vim config/puma.rb
 -port        ENV.fetch("PORT") { 3000 }
 +#port        ENV.fetch("PORT") { 3000 }
 
++# Listen on 3000/tcp allowing access from any IP addresses
++bind "tcp://0.0.0.0:3000"
+
  # Specifies the `environment` that Puma will run in.
 (略)
- # Allow puma to be restarted by `rails restart` command.
- plugin :tmp_restart
-+
-+# Listen on 3000/tcp allowing access from any IP address
-+bind "tcp://0.0.0.0:3000"
-+# And also enable unix domain socket for nginx
-+bind "unix://#{Rails.root.join("tmp", "sockets", "puma.sock")}"
-```
-
-これで以下のようになる。
-
-```text
-app_1          | => Booting Puma
-app_1          | => Rails 5.2.3 application starting in development
-app_1          | => Run `rails server -h` for more startup options
-app_1          | Puma starting in single mode...
-app_1          | * Version 3.12.1 (ruby 2.6.3-p62), codename: Llamas in Pajamas
-app_1          | * Min threads: 5, max threads: 5
-app_1          | * Environment: development
-app_1          | * Listening on tcp://0.0.0.0:3000
-app_1          | * Listening on unix:///opt/railsapp/tmp/sockets/puma.sock
-app_1          | Use Ctrl-C to stop
 ```
 
 ### 起動
@@ -378,8 +359,7 @@ docker-compose logs -f # リアルタイムログ出力
 
 ブラウザからアクセスできることを確認
 
-nginx経由: [http://localhost/](http://localhost/)
-Rails直接: [http://localhost:3000/](http://localhost:3000/)
+Rails直接: [http://localhost/](http://localhost/)
 
 ```bash
 docker-compose down # 停止&コンテナ削除 ※Volumeは残るのでデータは消えない
