@@ -5,7 +5,7 @@ Dockerを利用したRailsの開発環境を用意するための個人用テン
 ## 構成
 
 - app
-  - ruby:2.6.3, with Node.js 10.x and Ruby on Rails 5.2.3
+  - ruby:2.6.3, with Node.js 10.x and Ruby on Rails 6.0.0
   - Railsアプリケーションを動かすWebアプリケーションサーバ。
 - db
   - postgres:9.6
@@ -30,14 +30,12 @@ git clone https://github.com/ha4gu/docker-rails-template.git ${APPNAME} && cd ${
 rm -rf .git # テンプレートとしてのコミット履歴を削除
 mv README.md HOWTOUSE.md # Readmeファイルのリネーム（rails new実行時に上書きされてしまうため）
 rbenv version # ローカル側に指定したバージョンのRubyがインストール済みか確認
-gem list ^rails # ローカル側にRailsがインストール済みか確認、なければgem install rails --version="5.2.3"
-docker-compose build
-rails _5.2.3_ new . --force --skip-git --skip-bundle --skip-coffee --skip-turbolinks --skip-test -d postgresql
+gem list ^rails # ローカル側にRailsがインストール済みか確認、なければgem install rails --version="6.0.0"
+bin/rebuild
+rails _6.0.0_ new . --force --skip-git --skip-bundle --skip-test -d postgresql
 # --force: Gemfileを上書きさせるために必要
 # --skip-git: .gitignoreを上書きさせない
 # --skip-bundle: このタイミングではまだbundle installを実行させない
-# --skip-coffee: CoffeeScriptを使用せず、JavaScriptを使用する
-# --skip-turbolinks: Turbolinksを使用しない
 # --skip-test: Minitestのためのファイルやディレクトリを作成しない
 # -d postgresql: データベースとしてPostgreSQLを使用する
 ```
@@ -86,21 +84,6 @@ vim config/application.rb
  end
 ```
 
-### UglifierのES6対応有効化
-
-```bash
-vim config/environments/production.rb
-```
-
-```diff
-(略)
-   # Compress JavaScripts and CSS.
--  config.assets.js_compressor = :uglifier
-+  config.assets.js_compressor = Uglifier.new(harmony: true)
-   # config.assets.css_compressor = :sass
-(略)
-```
-
 ### Gemfileの用意とDBの作成
 
 ```bash
@@ -114,33 +97,33 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby "2.6.3"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails"
-gem "rails", "~> 5.2.3"
+gem "rails", "~> 6.0.0"
 # Use postgresql as the database for Active Record
 gem "pg", ">= 0.18", "< 2.0"
 # Use Puma as the app server
 gem "puma", "~> 3.12", ">= 3.12.1"
 # Use SCSS for stylesheets
+# gem "sass-rails", "~> 5"
 gem "sassc-rails", "~> 2.1", ">= 2.1.1"
-# Use Uglifier as compressor for JavaScript assets
-gem "uglifier", ">= 1.3.0"
-# See https://github.com/rails/execjs#readme for more supported runtimes
-# gem "mini_racer", platforms: :ruby
-
-# Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem "jbuilder", "~> 2.5"
+# Transpile app-like JavaScript.
+# Read more: https://github.com/rails/webpacker
+gem "webpacker", "~> 4.0"
+# Turbolinks makes navigating your web application faster.
+# Read more: https://github.com/turbolinks/turbolinks
+gem "turbolinks", "~> 5"
+# Build JSON APIs with ease.
+# Read more: https://github.com/rails/jbuilder
+gem "jbuilder", "~> 2.7"
 # Use Redis adapter to run Action Cable in production
 # gem "redis", "~> 4.0"
-# Use ActiveModel has_secure_password
+# Use Active Model has_secure_password
 gem "bcrypt", "~> 3.1", ">= 3.1.12"
 
-# Use ActiveStorage variant
-# gem "mini_magick", "~> 4.9", ">= 4.9.3"
-
-# Use Capistrano for deployment
-# gem "capistrano-rails", group: :development
+# Use Active Storage variant
+# gem "image_processing", "~> 1.2"
 
 # Reduces boot times through caching; required in config/boot.rb
-gem "bootsnap", ">= 1.1.0", require: false
+gem "bootsnap", ">= 1.4.2", require: false
 
 # Use slim instead of erb
 gem "html2slim", "~> 0.2.0"
@@ -182,10 +165,13 @@ gem "slim-rails", "~> 3.2"
 group :development, :test do
   # Call "byebug" anywhere in the code to stop execution and get a debugger console
   gem "byebug"
+
   # Use dotenv for some secure information
   gem "dotenv-rails", "~> 2.7", ">= 2.7.2"
+
   # Use factory_bot for generate some test data
   gem "factory_bot_rails", "~> 5.0", ">= 5.0.2"
+
   # Use RuboCop for code style checking
   gem "rubocop", "~> 0.74.0", require: false
   gem "rubocop-performance", "~> 1.4", ">= 1.4.1"
@@ -197,7 +183,9 @@ group :development do
   # Access an interactive console on exception pages or by calling "console" anywhere in the code.
   gem "listen", ">= 3.0.5", "< 3.2"
   gem "web-console", ">= 3.3.0"
-  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
+
+  # Spring speeds up development by keeping your application running in the background.
+  # Read more: https://github.com/rails/spring
   gem "spring"
   gem "spring-watcher-listen", "~> 2.0.0"
 end
@@ -212,6 +200,7 @@ end
 ```
 
 ```bash
+docker-compose run --rm app yarn install
 docker-compose run --rm app bundle exec rails db:create # 先にまずbundle installが自動的に実行される
 ```
 

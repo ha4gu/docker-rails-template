@@ -25,6 +25,7 @@ Metrics/BlockLength:
 
 Metrics/LineLength:
   Exclude:
+    - app/jobs/application_job.rb
     - config/application.rb
     - config/environments/**/*
     - config/puma.rb

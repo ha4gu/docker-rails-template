@@ -3,14 +3,18 @@ FROM ruby:2.6.3
 # Use UTF-8
 ENV LANG C.UTF-8
 
-# Install node.js and other applications
+# Install node.js, yarn and other applications
 ENV DEBCONF_NOWARNINGS yes
+ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
+  && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+  && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
   && apt-get update -qq \
   && apt-get install -y --no-install-recommends \
-    vim \
     nodejs \
     postgresql-client \
+    vim \
+    yarn \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
